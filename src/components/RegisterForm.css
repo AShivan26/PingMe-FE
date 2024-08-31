@@ -1,0 +1,80 @@
+/* RegisterForm.css */
+
+/* Apply flexbox to the body to center the register-container */
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 100% of the viewport height */
+    margin: 0; /* Remove default margin */
+    background-color: #4b0082; /* Dark purple background color */
+    color: #ffffff; /* White text color for contrast */
+}
+
+.register-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid #6a0dad; /* Lighter purple border color */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Darker shadow for contrast */
+    background-color: #6a0dad; /* Lighter purple background color for the form */
+}
+
+.register-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff; /* White text color */
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    display: block;
+    color: #ffffff; /* White text color for labels */
+}
+
+.form-group input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #9b59b6; /* Light purple border color */
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #e3d9f0; /* Light purple background for input fields */
+    color: #6a0dad; /* Darker purple text color for input fields */
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.register-button {
+    padding: 10px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #8e44ad; /* Medium purple background for button */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.register-button:disabled {
+    background-color: #d6a9e4; /* Light purple background when disabled */
+}
+
+.register-button:hover:not(:disabled) {
+    background-color: #732d91; /* Darker purple background on hover */
+}
