@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import './LoginForm.css'; // Import the CSS file
+import './RegisterForm.css'; // Import the CSS file
 
-const LoginForm = () => {
+const RegisterForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [retypePassword, setRetypePassword] = useState(''); // State for retype password
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -12,8 +13,14 @@ const LoginForm = () => {
         setLoading(true);
         setError(null);
 
+        if (password !== retypePassword) {
+            setError('Passwords do not match.');
+            setLoading(false);
+            return;
+        }
+
         try {
-            const response = await fetch('http://localhost:8080/pingme/login', { // Replace with your backend API URL
+            const response = await fetch('http://localhost:8080/pingme/register', { // Replace with your backend API URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -22,13 +29,13 @@ const LoginForm = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Login failed. Please check your credentials and try again.');
+                throw new Error('Registration failed. Please try again.');
             }
 
             const data = await response.json();
-            // Handle successful login
-            console.log('Login successful', data);
-            // You might want to redirect the user or store the auth token
+            // Handle successful registration
+            console.log('Registration successful', data);
+            // You might want to redirect the user or display a success message
 
         } catch (error) {
             setError(error.message);
@@ -38,10 +45,9 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="login-container">
-            <h2>PingMe Messenger</h2>
-            <h3>Login</h3>
-            <form onSubmit={handleSubmit} className="login-form">
+        <div className="register-container">
+            <h2>Register to PingMe Chat</h2>
+            <form onSubmit={handleSubmit} className="register-form">
                 <div className="form-group">
                     <label htmlFor="username">Username</label>
                     <input
@@ -62,13 +68,23 @@ const LoginForm = () => {
                         required
                     />
                 </div>
+                <div className="form-group">
+                    <label htmlFor="retypePassword">Retype Password</label>
+                    <input
+                        type="password" // Changed to password type for better security
+                        id="retypePassword"
+                        value={retypePassword}
+                        onChange={(e) => setRetypePassword(e.target.value)} // Update state on input change
+                        required
+                    />
+                </div>
                 {error && <div className="error">{error}</div>}
-                <button type="submit" disabled={loading} className="login-button">
-                    {loading ? 'Logging in...' : 'Login'}
+                <button type="submit" disabled={loading} className="register-button">
+                    {loading ? 'Registering...' : 'Register'}
                 </button>
             </form>
         </div>
     );
 };
 
-export default LoginForm;
+export default RegisterForm;
