@@ -1,24 +1,69 @@
 .chat-page {
     display: flex;
+    flex-direction: column;
     height: 100vh;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border-bottom: 2px solid #0056b3;
+}
+
+.navbar-brand {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-user span {
+    margin-right: 15px;
+}
+
+.logout-button {
+    background-color: #ff4d4d;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #e63946;
+}
+
+.chat-content {
+    display: flex;
+    flex: 1;
 }
 
 .user-list-container {
     width: 250px;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
     background-color: #f4f4f4;
     padding: 10px;
-    overflow-y: auto;
-    border-right: 1px solid #ddd;
 }
 
 .chat-area {
     flex: 1;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
     background-color: #fff;
 }
 
-.chat-area h2 {
-    color: #333;
-    font-size: 24px;
-    margin: 0;
+.no-chat-message {
+    text-align: center;
+    color: #aaa;
+    margin-top: 20px;
 }

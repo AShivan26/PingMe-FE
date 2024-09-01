@@ -1,15 +1,14 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from './UserContext';
 import './ChatPage.css';
 import UserList from './UserList';
 import { useNavigate } from 'react-router-dom';
-import ChatWindow  from "./ChatWindow";
+import ChatWindow from './ChatWindow';
 
 const ChatPage = () => {
-    const { userId } = useContext(UserContext); // Access userId from context
+    const { userId, setUserId } = useContext(UserContext); // Access userId and setUserId from context
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
-    const { setUserId } = useContext(UserContext);
 
     useEffect(() => {
         // If no userId is found in sessionStorage, redirect to login
@@ -21,7 +20,6 @@ const ChatPage = () => {
     if (!userId) {
         return null; // You might want to return a loading spinner or nothing here
     }
-
 
     const handleUserSelect = (user) => {
         setSelectedUser(user);
@@ -38,23 +36,27 @@ const ChatPage = () => {
 
     return (
         <div className="chat-page">
-            <div className="user-list-container">
-                <UserList userId={userId} onUserSelect={handleUserSelect}/>
-            </div>
-            <div>
-                <nav>
-                    <button onClick={handleLogout}>Logout</button>
-                </nav>
-            </div>
-            <div className="chat-area">
-                <h2>Welcome to the chat, {userId}</h2>
-                {selectedUser && (
-                    <ChatWindow selectedUser={selectedUser} onClose={handleCloseChat}/>
-                )}
+            <nav className="navbar">
+                <div className="navbar-brand">PingMe Chat</div>
+                <div className="navbar-user">
+                    <span>Welcome, {userId}</span>
+                    <button onClick={handleLogout} className="logout-button">Logout</button>
+                </div>
+            </nav>
+            <div className="chat-content">
+                <div className="user-list-container">
+                    <UserList userId={userId} onUserSelect={handleUserSelect} />
+                </div>
+                <div className="chat-area">
+                    {selectedUser ? (
+                        <ChatWindow selectedUser={selectedUser} onClose={handleCloseChat} />
+                    ) : (
+                        <div className="no-chat-message">Select a user to start chatting</div>
+                    )}
+                </div>
             </div>
         </div>
     );
-
 };
 
 export default ChatPage;
