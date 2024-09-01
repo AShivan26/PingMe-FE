@@ -6,19 +6,40 @@ import { useNavigate } from 'react-router-dom';
 import ChatWindow from './ChatWindow';
 
 const ChatPage = () => {
-    const { userId, setUserId } = useContext(UserContext); // Access userId and setUserId from context
+    const { userId, setUserId } = useContext(UserContext);
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
-        // If no userId is found in sessionStorage, redirect to login
         if (!userId) {
             navigate('/login');
         }
+
+        const handleUnload = async () => {
+            try {
+                // Perform logout request when user leaves the page
+                await fetch(`http://localhost:8080/pingme/logout/${userId}`, {
+                    method: 'POST', // or GET depending on your API
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            } catch (error) {
+                console.error('Logout request failed', error);
+            }
+        };
+
+        // Add event listener for page unload
+        window.addEventListener('beforeunload', handleUnload);
+
+        // Cleanup the event listener
+        return () => {
+            window.removeEventListener('beforeunload', handleUnload);
+        };
     }, [navigate, userId]);
 
     if (!userId) {
-        return null; // You might want to return a loading spinner or nothing here
+        return null;
     }
 
     const handleUserSelect = (user) => {
@@ -29,9 +50,20 @@ const ChatPage = () => {
         setSelectedUser(null);
     };
 
-    const handleLogout = () => {
-        setUserId(null); // Remove userId from context
-        navigate('/login'); // Redirect to login page
+    const handleLogout = async () => {
+        try {
+            await fetch(`http://localhost:8080/pingme/logout/${userId}`, {
+                method: 'POST', // or GET depending on your API
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+        } catch (error) {
+            console.error('Logout request failed', error);
+        } finally {
+            setUserId(null);
+            navigate('/login');
+        }
     };
 
     return (
