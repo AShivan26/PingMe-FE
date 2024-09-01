@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './RegisterForm.css';
+import { UserContext } from './UserContext';
 
 const RegisterForm = () => {
     const [username, setUsername] = useState('');
@@ -9,6 +10,7 @@ const RegisterForm = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate(); // Initialize navigate
+    const { setUserId } = useContext(UserContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,9 +37,11 @@ const RegisterForm = () => {
             }
 
             const data = await response.json();
+
             console.log('Registration successful', data);
 
             // Navigate to the chat page on success
+            setUserId(data.userId);
             navigate('/chat');
 
         } catch (error) {

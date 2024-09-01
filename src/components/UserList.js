@@ -4,22 +4,20 @@ import './UserList.css'; // Ensure you have the appropriate styles
 const UserList = ({ userId, onUserSelect }) => {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState(null);
+    const [isPolling, setIsPolling] = useState(true); // State to control polling
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const response = await fetch(`http://localhost:8080/pingme/users/${userId}`);
 
-
                 // Check if the response is in JSON format
                 const contentType = response.headers.get('content-type');
-
                 if (!contentType || !contentType.includes('application/json')) {
                     throw new Error('Expected JSON response');
                 }
 
                 const data = await response.json();
-
                 setUsers(data);
             } catch (error) {
                 setError(error.message);
@@ -27,8 +25,21 @@ const UserList = ({ userId, onUserSelect }) => {
             }
         };
 
+        // Initial fetch
         fetchUsers();
-    }, [userId]);
+
+        // Set up polling
+        const interval = setInterval(() => {
+            if (isPolling) {
+                fetchUsers();
+            }
+        }, 3000); // Poll every 5 seconds
+
+        // Clean up interval on component unmount
+        return () => {
+            clearInterval(interval);
+        };
+    }, [userId, isPolling]);
 
     return (
         <div className="user-list">
