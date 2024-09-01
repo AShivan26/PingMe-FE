@@ -9,6 +9,7 @@ const ChatPage = () => {
     const { userId } = useContext(UserContext); // Access userId from context
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
+    const { setUserId } = useContext(UserContext);
 
     useEffect(() => {
         // If no userId is found in sessionStorage, redirect to login
@@ -30,15 +31,25 @@ const ChatPage = () => {
         setSelectedUser(null);
     };
 
+    const handleLogout = () => {
+        setUserId(null); // Remove userId from context
+        navigate('/login'); // Redirect to login page
+    };
+
     return (
         <div className="chat-page">
             <div className="user-list-container">
-                <UserList userId={userId} onUserSelect={handleUserSelect} />
+                <UserList userId={userId} onUserSelect={handleUserSelect}/>
+            </div>
+            <div>
+                <nav>
+                    <button onClick={handleLogout}>Logout</button>
+                </nav>
             </div>
             <div className="chat-area">
                 <h2>Welcome to the chat, {userId}</h2>
                 {selectedUser && (
-                    <ChatWindow selectedUser={selectedUser} onClose={handleCloseChat} />
+                    <ChatWindow selectedUser={selectedUser} onClose={handleCloseChat}/>
                 )}
             </div>
         </div>
