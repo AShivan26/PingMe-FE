@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import './RegisterForm.css'; // Import the CSS file
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import './RegisterForm.css';
 
 const RegisterForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [retypePassword, setRetypePassword] = useState(''); // State for retype password
+    const [retypePassword, setRetypePassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate(); // Initialize navigate
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevents the default form submission behavior
+        e.preventDefault();
         setLoading(true);
         setError(null);
 
@@ -20,12 +22,12 @@ const RegisterForm = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/pingme/register', { // Replace with your backend API URL
+            const response = await fetch('http://localhost:8080/pingme/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }), // Send the username and password in the request body
+                body: JSON.stringify({ username, password }),
             });
 
             if (!response.ok) {
@@ -33,9 +35,10 @@ const RegisterForm = () => {
             }
 
             const data = await response.json();
-            // Handle successful registration
             console.log('Registration successful', data);
-            // You might want to redirect the user or display a success message
+
+            // Navigate to the chat page on success
+            navigate('/chat');
 
         } catch (error) {
             setError(error.message);
@@ -54,27 +57,27 @@ const RegisterForm = () => {
                         type="text"
                         id="username"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)} // Update state on input change
+                        onChange={(e) => setUsername(e.target.value)}
                         required
                     />
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">Password</label>
                     <input
-                        type="password" // Changed to password type for better security
+                        type="password"
                         id="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)} // Update state on input change
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
                 <div className="form-group">
                     <label htmlFor="retypePassword">Retype Password</label>
                     <input
-                        type="password" // Changed to password type for better security
+                        type="password"
                         id="retypePassword"
                         value={retypePassword}
-                        onChange={(e) => setRetypePassword(e.target.value)} // Update state on input change
+                        onChange={(e) => setRetypePassword(e.target.value)}
                         required
                     />
                 </div>
