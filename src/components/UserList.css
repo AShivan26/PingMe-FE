@@ -1,0 +1,39 @@
+.user-list {
+    padding: 10px;
+    font-family: Arial, sans-serif; /* Use a clean, readable font */
+    color: #333; /* Darker text color for better readability */
+}
+
+.user-list h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #555; /* Slightly lighter color for the heading */
+}
+
+.user-list ul {
+    list-style-type: none; /* Remove bullets from list */
+    padding: 0;
+}
+
+.user-item {
+    padding: 10px;
+    border-radius: 5px; /* Rounded corners */
+    margin-bottom: 10px;
+    font-size: 16px; /* Slightly larger text */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.user-item.online {
+    background-color: #e0ffe0; /* Light green background for online users */
+    color: #2d7a2d; /* Green text for online users */
+}
+
+.user-item.offline {
+    background-color: #ffe0e0; /* Light red background for offline users */
+    color: #a52d2d; /* Red text for offline users */
+}
+
+.user-item:hover {
+    background-color: #f0f0f0; /* Light gray background on hover */
+    cursor: pointer;
+}

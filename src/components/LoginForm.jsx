@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LoginForm.css'; // Import the CSS file
+import { UserContext } from './UserContext';
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate(); // Initialize useNavigate hook
+    const { setUserId } = useContext(UserContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevents the default form submission behavior
@@ -28,10 +32,13 @@ const LoginForm = () => {
             const data = await response.json();
             // Handle successful login
             console.log('Login successful', data);
-            // You might want to redirect the user or store the auth token
+            setUserId(data.userId);
+            navigate("/chat");
+
 
         } catch (error) {
             setError(error.message);
+            navigate('/register'); // Redirect to the register page if login fails
         } finally {
             setLoading(false);
         }
