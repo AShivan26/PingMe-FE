@@ -4,7 +4,7 @@ import './UserList.css'; // Ensure you have the appropriate styles
 const UserList = ({ userId, onUserSelect }) => {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState(null);
-    const [isPolling] = useState(true); // State to control polling
+    const [isPolling, setIsPolling] = useState(true); // State to control polling
 
     useEffect(() => {
         const fetchUsers = async () => {
