@@ -10,8 +10,8 @@
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    border-bottom: 1px solid #1c603e;
-    background: #44a811;
+    border-bottom: 1px solid #ddd;
+    background: #f4f4f4;
 }
 
 .chat-messages {
