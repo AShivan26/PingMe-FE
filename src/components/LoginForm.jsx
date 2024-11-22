@@ -4,12 +4,13 @@ import './LoginForm.css'; // Import the CSS file
 import { UserContext } from './UserContext';
 
 const LoginForm = () => {
-    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate(); // Initialize useNavigate hook
     const { setUserId } = useContext(UserContext);
+    const { setToken } = useContext(UserContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevents the default form submission behavior
@@ -17,12 +18,12 @@ const LoginForm = () => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:8080/pingme/login', { // Replace with your backend API URL
+            const response = await fetch('http://localhost:8080/auth/login', { // Replace with your backend API URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }), // Send the username and password in the request body
+                body: JSON.stringify({ email, password }), // Send the email and password in the request body
             });
 
             if (!response.ok) {
@@ -33,6 +34,7 @@ const LoginForm = () => {
             // Handle successful login
             console.log('Login successful', data);
             setUserId(data.userId);
+            setToken(data.jwt);
             navigate("/chat");
 
 
@@ -50,12 +52,12 @@ const LoginForm = () => {
             <h3>Login</h3>
             <form onSubmit={handleSubmit} className="login-form">
                 <div className="form-group">
-                    <label htmlFor="username">Username</label>
+                    <label htmlFor="email">Email</label>
                     <input
                         type="text"
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)} // Update state on input change
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)} // Update state on input change
                         required
                     />
                 </div>

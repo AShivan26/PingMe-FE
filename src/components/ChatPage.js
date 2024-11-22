@@ -7,21 +7,24 @@ import ChatWindow from './ChatWindow';
 
 const ChatPage = () => {
     const { userId, setUserId } = useContext(UserContext);
+    const { token, setToken} = useContext(UserContext);
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
-        if (!userId) {
+        console.log(token);
+        if (!token) {
             navigate('/login');
         }
 
         const handleUnload = async () => {
             try {
                 // Perform logout request when user leaves the page
-                await fetch(`http://localhost:8080/pingme/logout/${userId}`, {
+                await fetch(`http://localhost:8080/pingme/logout`, {
                     method: 'POST', // or GET depending on your API
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
                     },
                 });
             } catch (error) {
@@ -36,9 +39,9 @@ const ChatPage = () => {
         return () => {
             window.removeEventListener('beforeunload', handleUnload);
         };
-    }, [navigate, userId]);
+    }, [navigate, userId, token]);
 
-    if (!userId) {
+    if (!token) {
         return null;
     }
 
@@ -52,16 +55,18 @@ const ChatPage = () => {
 
     const handleLogout = async () => {
         try {
-            await fetch(`http://localhost:8080/pingme/logout/${userId}`, {
+            await fetch(`http://localhost:8080/pingme/logout`, {
                 method: 'POST', // or GET depending on your API
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
             });
         } catch (error) {
             console.error('Logout request failed', error);
         } finally {
             setUserId(null);
+            setToken(null);
             navigate('/login');
         }
     };
