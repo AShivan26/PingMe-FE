@@ -1,15 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import './UserList.css'; // Ensure you have the appropriate styles
+import React, {useContext, useEffect, useState} from 'react';
+import './UserList.css';
+import {UserContext} from "./UserContext"; // Ensure you have the appropriate styles
 
 const UserList = ({ userId, onUserSelect }) => {
     const [users, setUsers] = useState([]);
+    const { token} = useContext(UserContext);
     const [error, setError] = useState(null);
     const [isPolling] = useState(true); // State to control polling
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/pingme/users/${userId}`);
+                console.log(token);
+                const response = await fetch(`http://localhost:8080/pingme/chats/users`, {
+                    method: 'GET', // or GET depending on your API
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
 
                 // Check if the response is in JSON format
                 const contentType = response.headers.get('content-type');
@@ -39,7 +48,7 @@ const UserList = ({ userId, onUserSelect }) => {
         return () => {
             clearInterval(interval);
         };
-    }, [userId, isPolling]);
+    }, [userId, isPolling, token]);
 
     return (
         <div className="user-list">

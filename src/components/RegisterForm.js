@@ -5,12 +5,14 @@ import { UserContext } from './UserContext';
 
 const RegisterForm = () => {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [retypePassword, setRetypePassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate(); // Initialize navigate
     const { setUserId } = useContext(UserContext);
+    const { setToken } = useContext(UserContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,12 +26,12 @@ const RegisterForm = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/pingme/register', {
+            const response = await fetch('http://localhost:8080/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ username, email, password }),
             });
 
             if (!response.ok) {
@@ -42,6 +44,8 @@ const RegisterForm = () => {
 
             // Navigate to the chat page on success
             setUserId(data.userId);
+            setToken(data.jwt);
+            console.log(data.jwt);
             navigate('/chat');
 
         } catch (error) {
@@ -62,6 +66,16 @@ const RegisterForm = () => {
                         id="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email">Email Id</label>
+                    <input
+                        type="text"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
