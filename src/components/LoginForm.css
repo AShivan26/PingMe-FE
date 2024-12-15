@@ -1,80 +1,90 @@
 /* LoginForm.css */
 
-/* Apply flexbox to the body to center the login-container */
-body {
+.video-background {
     display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
+    text-align: center;    
     align-items: center;
     justify-content: center;
-    height: 100vh; /* 100% of the viewport height */
-    margin: 0; /* Remove default margin */
-    background-color: #4b0082; /* Dark purple background color */
     color: #ffffff; /* White text color for contrast */
 }
-
-.login-container {
+  
+video {
     width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    border: 1px solid #6a0dad; /* Lighter purple border color */
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Darker shadow for contrast */
-    background-color: #a809c3; /* Lighter purple background color for the form */
-}
-
-.login-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #24d87e; /* White text color */
+    height: 100%;
+    object-fit: cover;
 }
 
 .login-form {
-    display: flex;
-    flex-direction: column;
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 1000; 
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    padding: 20px;
+    background-color: rgba(62, 54, 54, 0.416);
+    border-radius: 8px;
 }
+
 
 .form-group {
     margin-bottom: 15px;
+    text-align: left;
 }
 
 .form-group label {
-    margin-bottom: 5px;
-    font-weight: bold;
     display: block;
-    color: #5ce808; /* White text color for labels */
+    margin-bottom: 5px;
+    color: #dfdfe7;
 }
 
 .form-group input {
     width: calc(100% - 20px);
     padding: 10px;
-    border: 1px solid #9b59b6; /* Light purple border color */
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: #e3d9f0; /* Light purple background for input fields */
-    color: #6a0dad; /* Darker purple text color for input fields */
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2e2e40;
+    color: #fff;
+}
+
+input:focus {
+    outline: none;
+    border-color: #5757ff;
+}
+
+.form-group input.invalid,
+input.invalid:focus {
+  border-color: #ff6f6f;
 }
 
 .error {
-    color: red;
-    font-size: 14px;
+    color: #ff6f6f;
     margin-bottom: 10px;
-    text-align: center;
 }
 
 .login-button {
     padding: 10px;
-    font-size: 16px;
-    color: #091b17;
-    background-color: #5bad44; /* Medium purple background for button */
+    background-color: #5757ff;
+    color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.login-button:disabled {
-    background-color: #d6a9e4; /* Light purple background when disabled */
+.login-button:hover {
+    background-color: #4040e0;
 }
 
-.login-button:hover:not(:disabled) {
-    background-color: #af11f3; /* Darker purple background on hover */
+.login-button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
 }
