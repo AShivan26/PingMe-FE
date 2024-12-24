@@ -7,9 +7,8 @@ import ChatWindow from './ChatWindow';
 
 const ChatPage = () => {
     const { userId, setUserId } = useContext(UserContext);
-    const { token, setToken} = useContext(UserContext);
+    const { token, setToken, userName} = useContext(UserContext);
     const [ chatId, setChatId ] = useState("");
-    const [ userName, setUserName ] = useState("");
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
 
@@ -64,7 +63,6 @@ const ChatPage = () => {
                 setChatId(filteredChats[0].id);
                 console.log(filteredChats[0].users[1].name)
                 setSelectedUser(filteredChats[0].users[1].name);
-                setUserName(filteredChats[0].users[0].name)
             } else {                          
                 response = await fetch(`http://localhost:8080/pingme/chats/single`, {
                     method: 'POST', 
@@ -77,7 +75,6 @@ const ChatPage = () => {
                 data = await response.json();
                 setChatId(data.id);
                 setSelectedUser(data.users[1].name);
-                setUserName(data.users[0].name)
             }
         } catch (error) {
             console.error('Chat request failed', error);
