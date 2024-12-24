@@ -63,7 +63,8 @@ const ChatPage = () => {
             if (filteredChats.length > 0) {
                 setChatId(filteredChats[0].id);
                 console.log(filteredChats[0].users[1].name)
-                setUserName(filteredChats[0].users[1].name)
+                setSelectedUser(filteredChats[0].users[1].name);
+                setUserName(filteredChats[0].users[0].name)
             } else {                          
                 response = await fetch(`http://localhost:8080/pingme/chats/single`, {
                     method: 'POST', 
@@ -75,12 +76,12 @@ const ChatPage = () => {
                 }); 
                 data = await response.json();
                 setChatId(data.id);
-                setUserName(data.users[1].name)
+                setSelectedUser(data.users[1].name);
+                setUserName(data.users[0].name)
             }
         } catch (error) {
             console.error('Chat request failed', error);
         }
-        setSelectedUser(toUserId);
     };
 
     const handleCloseChat = () => {
@@ -110,7 +111,7 @@ const ChatPage = () => {
             <nav className="navbar">
                 <div className="navbar-brand">PingMe Chat</div>
                 <div className="navbar-user">
-                    <span>Welcome, {userId}</span>
+                    <span>Welcome, {userName}</span>
                     <button onClick={handleLogout} userName={userName} className="logout-button">Logout</button>
                 </div>
             </nav>
@@ -120,7 +121,7 @@ const ChatPage = () => {
                 </div>
                 <div className="chat-area">
                     {selectedUser ? (
-                        <ChatWindow chatId={chatId} useName={userName} onClose={handleCloseChat} />
+                        <ChatWindow chatId={chatId} useName={selectedUser} onClose={handleCloseChat} />
                     ) : (
                         <div className="no-chat-message">Select a user to start chatting</div>
                     )}
