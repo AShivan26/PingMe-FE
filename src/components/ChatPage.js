@@ -8,6 +8,8 @@ import ChatWindow from './ChatWindow';
 const ChatPage = () => {
     const { userId, setUserId } = useContext(UserContext);
     const { token, setToken} = useContext(UserContext);
+    const [ chatId, setChatId ] = useState("");
+    const [ userName, setUserName ] = useState("");
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
 
@@ -20,7 +22,7 @@ const ChatPage = () => {
         const handleUnload = async () => {
             try {
                 // Perform logout request when user leaves the page
-                await fetch(`http://localhost:8080/pingme/logout`, {
+                await fetch(`http://localhost:8080/pingme/chats/logout`, {
                     method: 'POST', // or GET depending on your API
                     headers: {
                         'Content-Type': 'application/json',
@@ -45,8 +47,40 @@ const ChatPage = () => {
         return null;
     }
 
-    const handleUserSelect = (user) => {
-        setSelectedUser(user);
+    const handleUserSelect = async (toUserId) => {
+        try {
+            let response = await fetch(`http://localhost:8080/pingme/chats/user`, {
+                method: 'GET', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${token}`,
+                },
+            }); 
+            let data = await response.json();
+            const filteredChats = data.filter(chat =>
+                chat.users.some(user => user.id === toUserId)
+            );
+            if (filteredChats.length > 0) {
+                setChatId(filteredChats[0].id);
+                console.log(filteredChats[0].users[1].name)
+                setUserName(filteredChats[0].users[1].name)
+            } else {                          
+                response = await fetch(`http://localhost:8080/pingme/chats/single`, {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization' : `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ toUserId }),
+                }); 
+                data = await response.json();
+                setChatId(data.id);
+                setUserName(data.users[1].name)
+            }
+        } catch (error) {
+            console.error('Chat request failed', error);
+        }
+        setSelectedUser(toUserId);
     };
 
     const handleCloseChat = () => {
@@ -55,11 +89,11 @@ const ChatPage = () => {
 
     const handleLogout = async () => {
         try {
-            await fetch(`http://localhost:8080/pingme/logout`, {
+            await fetch(`http://localhost:8080/pingme/chats/logout`, {
                 method: 'POST', // or GET depending on your API
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization' : `Bearer ${token}`,
                 },
             });
         } catch (error) {
@@ -77,7 +111,7 @@ const ChatPage = () => {
                 <div className="navbar-brand">PingMe Chat</div>
                 <div className="navbar-user">
                     <span>Welcome, {userId}</span>
-                    <button onClick={handleLogout} className="logout-button">Logout</button>
+                    <button onClick={handleLogout} userName={userName} className="logout-button">Logout</button>
                 </div>
             </nav>
             <div className="chat-content">
@@ -86,7 +120,7 @@ const ChatPage = () => {
                 </div>
                 <div className="chat-area">
                     {selectedUser ? (
-                        <ChatWindow selectedUser={selectedUser} onClose={handleCloseChat} />
+                        <ChatWindow chatId={chatId} useName={userName} onClose={handleCloseChat} />
                     ) : (
                         <div className="no-chat-message">Select a user to start chatting</div>
                     )}

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './ChatWindow.css'; // Add styles for chat window
 
-const ChatWindow = ({ selectedUser, onClose }) => {
+const ChatWindow = ({ chatId, userName, onClose }) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
 
-    if (!selectedUser) return null;
+    if (!chatId) return null;
 
     const handleSendMessage = () => {
         if (message.trim()) {
@@ -17,7 +17,7 @@ const ChatWindow = ({ selectedUser, onClose }) => {
     return (
         <div className="chat-window">
             <div className="chat-header">
-                <h2>Chat with {selectedUser.name}</h2>
+                <h2>Chat with {userName}</h2>
                 <button onClick={onClose} className="close-button">X</button>
             </div>
             <div className="chat-messages">

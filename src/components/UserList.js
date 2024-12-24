@@ -60,7 +60,7 @@ const UserList = ({ userId, onUserSelect }) => {
                         <li
                             key={user.id}
                             className={`user-item ${user.online ? 'online' : 'offline'}`}
-                            onClick={() => onUserSelect(user)}
+                            onClick={() => onUserSelect(user.id)}
                         >
                             {user.name}
                         </li>
