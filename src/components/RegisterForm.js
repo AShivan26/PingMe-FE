@@ -14,7 +14,7 @@ const RegisterForm = () => {
     const [isEmailValid, setIsEmailValid] = useState(true);
     const [doPasswordsMatch, setDoPasswordsMatch] = useState(true);
     const navigate = useNavigate(); // Initialize navigate
-    const { setUserId, setToken } = useContext(UserContext);
+    const { setUserId, setToken, setUserName } = useContext(UserContext);
 
     // Criteria states
     const [criteria, setCriteria] = useState({
@@ -95,6 +95,7 @@ const RegisterForm = () => {
             // Navigate to the chat page on success
             setUserId(data.userId);
             setToken(data.jwt);
+            setUserName(data.userName);
             console.log(data.jwt);
             navigate('/chat');
 
