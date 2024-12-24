@@ -1,14 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import './ChatWindow.css'; // Add styles for chat window
+import React, {useContext, useEffect, useState} from 'react';
+import './ChatWindow.css';
+import {UserContext} from "./UserContext"; // Add styles for chat window
 
-const ChatWindow = ({ chatId, userName, onClose }) => {
-    const [message, setMessage] = useState('');
+const ChatWindow = ({chatId, userName, onClose}) => {
+    const [content, setContent] = useState('');
     const [messages, setMessages] = useState([]);
+    const {token} = useContext(UserContext);
 
-    const handleSendMessage = () => {
-        if (message.trim()) {
-            setMessages([...messages, { user: 'You', text: message }]);
-            setMessage(''); // Clear the input field
+    useEffect(() => {
+        console.log('hello');
+        const handleReceiveMessage = async () => {
+            try {
+                let messageHistory=[];
+                const response = await fetch(`http://localhost:8080/pingme/chats/${chatId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                let history = await response.json()
+                for (let idx in history.messages) {
+                    let data = history.messages[idx]
+                    messageHistory = [...messageHistory, {user: data.user.name, text: data.content}]
+                    setMessages(messageHistory);
+                }
+            } catch (error) {
+                console.error('Receive chat endpoint failed', error);
+            }
+        };
+        handleReceiveMessage()
+    }, []);
+
+    const handleSendMessage = async () => {
+        try {
+            await fetch('http://localhost:8080/pingme/messages/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({chatId, content}),
+            });
+        } catch (error) {
+            console.error('Create chat endpoint failed', error);
+        }
+        if (content.trim()) {
+            setMessages([...messages, {user: 'You', text: content}]);
+            setContent('');
         }
     };
 
@@ -29,8 +68,8 @@ const ChatWindow = ({ chatId, userName, onClose }) => {
                 <input
                     type="text"
                     placeholder="Type a message..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
                 />
                 <button onClick={handleSendMessage}>Send</button>
             </div>
