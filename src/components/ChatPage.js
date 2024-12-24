@@ -121,7 +121,7 @@ const ChatPage = () => {
                 </div>
                 <div className="chat-area">
                     {selectedUser ? (
-                        <ChatWindow chatId={chatId} useName={selectedUser} onClose={handleCloseChat} />
+                        <ChatWindow chatId={chatId} userName={selectedUser} onClose={handleCloseChat} />
                     ) : (
                         <div className="no-chat-message">Select a user to start chatting</div>
                     )}
