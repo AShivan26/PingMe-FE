@@ -11,7 +11,7 @@ const LoginForm = () => {
     const [loading, setLoading] = useState(false);
     const [isEmailValid, setIsEmailValid] = useState(true);
     const navigate = useNavigate();
-    const { setUserId, setToken } = useContext(UserContext);    
+    const { setUserId, setToken, setUserName } = useContext(UserContext);
 
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,6 +48,7 @@ const LoginForm = () => {
             const data = await response.json();
             setUserId(data.userId);
             setToken(data.jwt);
+            setUserName(data.userName);
             navigate("/chat");
           } catch (error) {
             setError(error.message);
