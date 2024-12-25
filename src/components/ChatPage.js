@@ -49,32 +49,35 @@ const ChatPage = () => {
     const handleUserSelect = async (toUserId) => {
         try {
             let response = await fetch(`http://localhost:8080/pingme/chats/user`, {
-                method: 'GET', 
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization' : `Bearer ${token}`,
                 },
-            }); 
+            });
             let data = await response.json();
             const filteredChats = data.filter(chat =>
                 chat.users.some(user => user.id === toUserId)
             );
             if (filteredChats.length > 0) {
                 setChatId(filteredChats[0].id);
-                console.log(filteredChats[0].users[1].name)
-                setSelectedUser(filteredChats[0].users[1].name);
-            } else {                          
+                console.log(userName, filteredChats[0].users);
+                const otherUser = filteredChats[0].users.find(user => user.name !== userName);
+                console.log(otherUser);
+                setSelectedUser(otherUser.name);
+            } else {
                 response = await fetch(`http://localhost:8080/pingme/chats/single`, {
-                    method: 'POST', 
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization' : `Bearer ${token}`,
                     },
                     body: JSON.stringify({ toUserId }),
-                }); 
+                });
                 data = await response.json();
                 setChatId(data.id);
-                setSelectedUser(data.users[1].name);
+                const otherUser = data.users.find(user => user.name !== userName);
+                setSelectedUser(otherUser.name);
             }
         } catch (error) {
             console.error('Chat request failed', error);
