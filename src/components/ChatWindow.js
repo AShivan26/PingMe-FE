@@ -15,7 +15,10 @@ const ChatWindow = ({chatId, userName, onClose}) => {
         const temp = over(sock);
         setStompClient(temp);
 
-        const headers =  {'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+        const headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          };
         temp.connect(headers, onConnect, onError);
     };
 
@@ -30,29 +33,21 @@ const ChatWindow = ({chatId, userName, onClose}) => {
             // stompClient.subscribe(`/group/${currentChat?.id}`, onMessageReceive);
             // } else {
             // Subscribe to direct user messages
-            stompClient.subscribe(`/app/message`, onMessageReceive);
+            stompClient.subscribe(`/user/${chatId}`, onMessageReceive);
             // }
         }
     };
 
     const onError = (error) => {
         console.log("on error ", error);
-    };
-
-    useEffect(() => {
-        connect();
-        return () => {
-            if (stompClient) stompClient.disconnect();
-        };
-    }, []);
-    
+    };    
 
     useEffect(() => {
         if (stompClient && stompClient.connected) {
         //   const subscription = currentChat.isGroupChat
         //     ? stompClient.subscribe(`/group/${currentChat.id}`, onMessageReceive)
         //     : 
-        const subscription = stompClient.subscribe(`/user/${chatId}`, onMessageReceive);
+        const subscription = stompClient.subscribe(`/app/message`, onMessageReceive);
     
           return () => {
             subscription.unsubscribe();
@@ -75,8 +70,7 @@ const ChatWindow = ({chatId, userName, onClose}) => {
         }
 
         if (stompClient && stompClient.connected) { // Ensure connection is established
-            stompClient.send("/app", {}, JSON.stringify(chatId, { user: userName, text: content }));
-            setMessages((prevMessages) => [...prevMessages, { user: userName, text: content }]);
+            stompClient.send(`/user/${chatId}`, {}, JSON.stringify({chatId, user: userName, text: content}));
             setContent('');
         } else {
             console.error("WebSocket connection is not established yet.");
@@ -84,31 +78,46 @@ const ChatWindow = ({chatId, userName, onClose}) => {
       };
       
 
-    const onMessageReceive = (payload) => {
+      const onMessageReceive = (payload) => {
         const receivedMessage = JSON.parse(payload.body);
-        setMessages((prevMessages) => [...prevMessages, { user: userName, text: receivedMessage }]);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { user: receivedMessage.user, text: receivedMessage.text },
+        ]);
       };
 
-    useEffect(() => {
-            console.log('hello');
-            const handleReceiveMessage = async () => {
-                try {
-                    const response = await fetch(`http://localhost:8080/pingme/chats/${chatId}`, {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                    });
-                    const history = await response.json();
-                    const messageHistory = history.messages.map((data) => ({
-                        user: data.user.name,
-                        text: data.content,
-                    }));
-                    setMessages(messageHistory);
-                } catch (error) {
-                    console.error('Failed to fetch chat history:', error);
-                }
-            };            
-            handleReceiveMessage()
-        }, []);
+    
+  useEffect(() => {
+    const fetchChatHistory = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/pingme/chats/${chatId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const history = await response.json();
+        const messageHistory = history.messages.map((data) => ({
+          user: data.user.name,
+          text: data.content,
+        }));
+        setMessages(messageHistory);
+      } catch (error) {
+        console.error('Failed to fetch chat history:', error);
+      }
+    };
+
+    fetchChatHistory();
+  }, [chatId, token]);
+
+  useEffect(() => {
+    connect();
+
+    return () => {
+      if (stompClient) stompClient.disconnect();
+    };
+  }, []);
 
     return (
         <div className="chat-window">
